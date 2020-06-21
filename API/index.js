@@ -1,45 +1,53 @@
+// Load drop down options 
+fetch('https://api.exchangeratesapi.io/latest')
+.then(response => response.json())
+.then(data => {
+  let rates = data.rates;
+  for (const [curr, rate] of Object.entries(rates)) {
+    const rate_option = document.getElementById("Select");
+    const option = document.createElement("option");
+    option.text = `${curr}`;
+    rate_option.add(option);
+    option.setAttribute("value", `${rate}`);
+    option.setAttribute("id", `${rate}`);
+  }
+}) 
 
-function getValues(){
-  var currency = document.getElementById("mySelect2").selectedIndex;
-  const input = document.querySelector("#val1").value;
-  getRate(currency, val1);
+// everything is ok except initial input / click 
+//first key press or click triggers function from HTML, so only registers click or input contents on
+//second input / click
+// need to clear output box to zero when backspaced after last inut character- reset state ?
+
+function clickListener(userInput){  
+document.getElementById("Select").addEventListener('click', function(e) { 
+  let target = e.target, 
+      rate = target.value 
+      // console.log('click', rate, userInput)  
+        InputListener(rate);  
+      if (userInput && rate > 0){
+        calculateConversion(userInput, rate);
+      }
+  });
 }
 
 
-function getRate(currency, input){
-  fetch('https://api.exchangeratesapi.io/latest?base=GBP')
-    .then(response => response.json())
-    .then(data => {
-      let AUD_rate = data.rates.AUD
-      let USD_rate = data.rates.USD
-      let EUR_rate = data.rates.EUR
-      calculateConversion(EUR_rate, USD_rate, AUD_rate, currency, input);
-    })
-}
-
-//for more currencies pass as array instead and access via index? 
-function calculateConversion(EUR_rate, USD_rate, AUD_rate, currency,  input){
-  if (currency === 0) {
-    const result = EUR_rate*input
-    document.getElementById("val2").value = `${result}`;
-  } 
-  if (currency === 1) {
-    const result = USD_rate*input
-    document.getElementById("val2").value = `${result}`;
-  } 
-  if (currency === 2) {
-    const result = AUD_rate*input
-    document.getElementById("val2").value = `${result}`;
-  } 
+function InputListener(rate){
+  document.getElementById("userInput").addEventListener("input", function(e) {
+  let target = e.target, 
+      userInput = target.value 
+      // console.log('type', rate, userInput)  
+      clickListener(userInput);
+    if (userInput && rate > 0){
+      calculateConversion(userInput, rate);
+    }
+  });
 }
 
 
-//https://exchangeratesapi.io/    (API)
-// Rates are quoted against the Euro by default. Quote against a different currency by setting 
-// the base parameter in your request:
-// https://api.exchangeratesapi.io/latest?base=USD
-
-
-
-
+function calculateConversion(userInput, rate){
+  if (userInput && rate > 0) {
+    let result = rate*userInput
+    document.getElementById("output").value = `${result}`;
+  }
+}
 

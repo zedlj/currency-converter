@@ -5,12 +5,10 @@
 </head>
 <body>
   <form >
-	<input oninput="getValues()" type="text" id="val1" placeholder="type amount in £..">
-	<input type="text" id="val2">
-	<select onclick="getValues()" id="mySelect2">
-	  <option id="EUR">EUR</option>
-	  <option id="USD">USD</option>
-	  <option id="AUD">AUD</option>
+	<input oninput="InputListener()" type="text" id="userInput" placeholder="type amount in  €.."> 
+	<input type="text" id="output">
+	<select onclick="clickListener()"id="Select">
+		<option></option>
  	</select>
   </form>
 	<script type="text/javascript" src="index.js"></script>
