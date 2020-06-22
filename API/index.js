@@ -1,4 +1,4 @@
-// Load drop down options 
+//Load drop down options 
 fetch('https://api.exchangeratesapi.io/latest')
 .then(response => response.json())
 .then(data => {
@@ -11,12 +11,12 @@ fetch('https://api.exchangeratesapi.io/latest')
     option.setAttribute("value", `${rate}`);
     option.setAttribute("id", `${curr}`);
   }
-}) 
+})
 
 
 // set inital dropdown rate
 window.onload = () => {
-  rate = 1.521  //query selector: Select > input > (first) value="x"   ???
+  rate = 1.521             //query selector: Select > input > (first) value="x"   ???
   inputListener(rate);
   clickListener(rate);
 };  
@@ -40,9 +40,13 @@ function inputListener(rate){
   document.getElementById("userInput").addEventListener("keyup", function(event) {
     let target = event.target, 
     userInput = target.value 
-    clickListener(userInput);
-    if (userInput && rate >= 0){
-      calculateConversion(userInput, rate);
+    if (! isNaN(userInput)){
+      clickListener(userInput);
+      if (userInput && rate >= 0){
+        calculateConversion(userInput, rate);
+      }
+    } else {
+      document.getElementById("error").innerHTML = "please enter numbers only!";
     }
   });
 }
@@ -52,6 +56,7 @@ function checkInputEmpty(){
   const userInputCheck = document.querySelector("#userInput").value;
   if (! userInputCheck){
     document.getElementById("output").innerHTML = "";
+    document.getElementById("error").innerHTML = "";
   }
 }
 
