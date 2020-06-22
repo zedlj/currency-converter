@@ -15,13 +15,11 @@ fetch('https://api.exchangeratesapi.io/latest')
 
 
 // set inital dropdown rate
-function initialState(){
-  window.onload = () => {
-    rate = 1.521 //query selector: Select > input > (first) value="x"   ???
-    inputListener(rate);
-    clickListener(rate);
-  };  
-}
+window.onload = () => {
+  rate = 1.521  //query selector: Select > input > (first) value="x"   ???
+  inputListener(rate);
+  clickListener(rate);
+};  
 
 
 function clickListener(userInput){  
@@ -50,19 +48,15 @@ function inputListener(rate){
 }
 
 
-function calculateConversion(userInput, rate){
-    let result = rate*userInput
-    document.getElementById("output").value = `${result}`;
-}
-
-
-
 function checkInputEmpty(){
   const userInputCheck = document.querySelector("#userInput").value;
   if (! userInputCheck){
-    document.getElementById("output").value = "";
+    document.getElementById("output").innerHTML = "";
   }
 }
 
 
-initialState();
+function calculateConversion(userInput, rate){
+    let result = rate*userInput
+    document.getElementById("output").innerHTML = `${result}`;
+}
