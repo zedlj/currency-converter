@@ -9,17 +9,26 @@ fetch('https://api.exchangeratesapi.io/latest')
     option.text = `${curr}`;
     rateOption.add(option);
     option.setAttribute("value", `${rate}`);
-    option.setAttribute("id", `${rate}`);
+    option.setAttribute("id", `${curr}`);
   }
 }) 
 
 
+// set inital dropdown rate
+function initialState(){
+  window.onload = () => {
+    rate = 1.521 //query selector: Select > input > (first) value="x"   ???
+    inputListener(rate);
+    clickListener(rate);
+  };  
+}
+
+
 function clickListener(userInput){  
-  // console.log('type')
-  document.getElementById("Select").addEventListener("click", function(e) { 
-      let target = e.target, 
+  checkInputEmpty();
+  document.getElementById("Select").addEventListener("click", function(event) { 
+      let target = event.target, 
       rate = target.value 
-      // console.log('click', rate, userInput)  
       inputListener(rate);  
       if (userInput && rate >= 0){
         calculateConversion(userInput, rate);
@@ -29,10 +38,10 @@ function clickListener(userInput){
 
 
 function inputListener(rate){
-  document.getElementById("userInput").addEventListener("keyup", function(e) {
-    let target = e.target, 
+  checkInputEmpty();
+  document.getElementById("userInput").addEventListener("keyup", function(event) {
+    let target = event.target, 
     userInput = target.value 
-    // console.log('type', rate, userInput)  
     clickListener(userInput);
     if (userInput && rate >= 0){
       calculateConversion(userInput, rate);
@@ -48,5 +57,12 @@ function calculateConversion(userInput, rate){
 
 
 
-inputListener();
-clickListener();
+function checkInputEmpty(){
+  const userInputCheck = document.querySelector("#userInput").value;
+  if (! userInputCheck){
+    document.getElementById("output").value = "";
+  }
+}
+
+
+initialState();
