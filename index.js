@@ -1,8 +1,8 @@
-function loadDropDown(cookierate){ 
+function loadDropdown(){
   fetch('https://api.exchangeratesapi.io/latest')
   .then(response => response.json())
   .then(data => {
-    let rates = data.rates;
+    const rates = data.rates;
     for (const [curr, rate] of Object.entries(rates)) {
       const rateOption = document.getElementById("Select");
       const option = document.createElement("option");
@@ -11,64 +11,54 @@ function loadDropDown(cookierate){
       option.setAttribute("value", `${rate}`);
       option.setAttribute("id", `${curr}`);
     }
+    checkCookie();
   })
 }
 
 
 function checkCookie(){
-  if (document.cookie === ""){
-    console.log('no cookies')
-    loadDropDown();
-    let rate = 1.5269
-    clickListener(rate);
-    inputListener(rate);
-  } else {
-    console.log('cookies exist')
+    if (document.cookie === ""){
+      rate = document.getElementById("CAD").value
+      clickListener(rate);
+      inputListener(rate);
+    } else {
       getCookie();
-  }
+    }
 }
 
 
 function getCookie (){
-  console.log('getting cookie')
-    let cookies = `${document.cookie}`;
-    console.log(document.cookie)
-    let userInputSplit = cookies.split(`userInput=`)[1]   // .join() ?
-    let userInput = userInputSplit.split(`;`)[0]
-    console.log(userInput)
-    document.getElementById("userInput").value = `${userInput}`;
-    let rateSplit  = cookies.split(`;`)[1]
-    let rate = rateSplit.split(`rate=`)[1]
-    console.log(rate)
-    // when load dropdown, link rate to option it belongs to and add selected attribute
-    loadDropDown();   
-    calculateConversion(userInput, rate); 
-    clickListener(userInput);
-    inputListener(rate);
+  //change to Regex.. 
+  const cookies = document.cookie
+  const userInputSplit = cookies.split(`;`)[1]   
+  const userInput = userInputSplit.split(`userInput=`)[1]
+  const rateSplit = cookies.split(`rate=`)[1]
+  const rateCode = rateSplit.split(`;`)[0]
+ //
+  const clickedOption = document.querySelector(`option[id="${rateCode}"]`);
+  clickedOption.setAttribute('selected', 'selected')
+  rate = clickedOption.value
+  document.getElementById("userInput").value = `${userInput}`;
+  document.getElementById("output").innerHTML = `${userInput*rate}`;
+  clickListener(userInput);
+  inputListener(rate);
 }
 
 
 function setCookie(userInput, rate){
+  document.cookie = `rate = ${document.querySelector(`option[value="${rate}"]`).id}`;   
   document.cookie = `userInput=${userInput}`;
-  document.cookie = `rate=${rate}`;
-  // const clickedOption = document.querySelector(`option[value="${rate}"]`);
-  // console.log(clickedOption);
 }
 
 
 function clickListener(userInput){  
   checkInputEmpty();
   document.getElementById("Select").addEventListener("change", function(event) { 
-      let target = event.target, 
+      const target = event.target, 
       rate = target.value
-      inputListener(rate); 
+      inputListener(rate);
       if (userInput && rate >= 0){
         calculateConversion(userInput, rate);
-        setCookie(userInput, rate);
-        //displays option element that was clicked on and adds attribute selected
-        const clickedOption = document.querySelector(`option[value="${rate}"]`);
-        clickedOption.setAttribute('selected', 'selected')
-        console.log(clickedOption)
       }
   });
 }
@@ -77,13 +67,12 @@ function clickListener(userInput){
 function inputListener(rate){
   checkInputEmpty();
   document.getElementById("userInput").addEventListener("keyup", function(event) {
-    let target = event.target, 
+    const target = event.target, 
     userInput = target.value 
     if (! isNaN(userInput)){
       clickListener(userInput);
       if (userInput && rate >= 0){
         calculateConversion(userInput, rate);
-        setCookie(userInput, rate);
       }
     } else {
       document.getElementById("error").innerHTML = "please enter numbers only!";
@@ -102,10 +91,10 @@ function checkInputEmpty(){
 
 
 function calculateConversion(userInput, rate){
-    let result = rate*userInput
+    const result = rate*userInput
     document.getElementById("output").innerHTML = `${result}`;
+    setCookie(userInput, rate);
 }
 
-
-
-checkCookie();
+ 
+loadDropdown();
