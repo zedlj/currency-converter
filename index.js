@@ -17,27 +17,28 @@ function loadDropdown(){
 
 
 function checkCookie(){
-    if (document.cookie === ""){
-      rate = document.getElementById("CAD").value
-      clickListener(rate);
-      inputListener(rate);
-    } else {
-      getCookie();
-    }
+  if (document.cookie === ""){
+    rate = document.getElementById("CAD").value;
+    clickListener(rate);
+    inputListener(rate);
+  } else {
+    getCookie();
+  }
 }
 
 
 function getCookie (){
-  //change to Regex.. 
-  const cookies = document.cookie
-  const userInputSplit = cookies.split(`;`)[1]   
-  const userInput = userInputSplit.split(`userInput=`)[1]
-  const rateSplit = cookies.split(`rate=`)[1]
-  const rateCode = rateSplit.split(`;`)[0]
- //
+  const rateCode = document.cookie
+  .split('; ')
+  .find(value => value.startsWith('rate'))
+  .split('=')[1];
+  const userInput = document.cookie
+  .split('; ')
+  .find(value => value.startsWith('userInput'))
+  .split('=')[1];
   const clickedOption = document.querySelector(`option[id="${rateCode}"]`);
   clickedOption.setAttribute('selected', 'selected')
-  rate = clickedOption.value
+  rate = clickedOption.value;
   document.getElementById("userInput").value = `${userInput}`;
   document.getElementById("output").innerHTML = `${userInput*rate}`;
   clickListener(userInput);
@@ -54,12 +55,12 @@ function setCookie(userInput, rate){
 function clickListener(userInput){  
   checkInputEmpty();
   document.getElementById("Select").addEventListener("change", function(event) { 
-      const target = event.target, 
-      rate = target.value
-      inputListener(rate);
-      if (userInput && rate >= 0){
-        calculateConversion(userInput, rate);
-      }
+    const target = event.target, 
+    rate = target.value;
+    inputListener(rate);
+    if (userInput && rate >= 0){
+      calculateConversion(userInput, rate);
+    }
   });
 }
 
@@ -68,7 +69,7 @@ function inputListener(rate){
   checkInputEmpty();
   document.getElementById("userInput").addEventListener("keyup", function(event) {
     const target = event.target, 
-    userInput = target.value 
+    userInput = target.value; 
     if (! isNaN(userInput)){
       clickListener(userInput);
       if (userInput && rate >= 0){
@@ -91,9 +92,9 @@ function checkInputEmpty(){
 
 
 function calculateConversion(userInput, rate){
-    const result = rate*userInput
-    document.getElementById("output").innerHTML = `${result}`;
-    setCookie(userInput, rate);
+  const result = rate*userInput;
+  document.getElementById("output").innerHTML = `${result}`;
+  setCookie(userInput, rate);
 }
 
  
